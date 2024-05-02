@@ -1,6 +1,8 @@
 import numpy as np
 import random
 import sys
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 class ModeloDeputados:
     def __init__(self, cycles):
@@ -16,9 +18,70 @@ class ModeloDeputados:
         selected_columns = self.matrix[:, columns_to_print]
         print(f"Output: \n {selected_columns} \n Candidatos: {len(selected_columns)}")
 
+    def PlotMatrix(self):
+        cmap_custom = mcolors.LinearSegmentedColormap.from_list("custom_binary", [(0, "white"), (0.5, "gray"), (1, "black")])
+
+        shuffle_matrix = self.matrix.astype(float)
+        np.random.shuffle(shuffle_matrix)
+
+        for i in range (len(shuffle_matrix)):
+            col = 216
+            while(col>=0):
+                if(shuffle_matrix[i][col]) == 1:
+                    shuffle_matrix[i][col] = 0.5
+                    col -=1
+                else:
+                    break
+        plt.imshow(shuffle_matrix,cmap=cmap_custom,interpolation="nearest")
+        plt.title("Matriz Deputados")
+        plt.xlabel("Months")
+        plt.ylabel("Deputies")
+        plt.show()
+
+    def PlotSurvivalTime(self):
+        cmap_custom = mcolors.LinearSegmentedColormap.from_list("custom_binary", [(0, "white"), (0.5, "gray"), (1, "black")])
+        new_matrix = self.matrix.astype(float)  
+
+        for i in range (len(new_matrix)):
+            col = 216
+            while(col>=0):
+                if(new_matrix[i][col]) == 1:
+                    new_matrix[i][col] = 0.5
+                    col -=1
+                else:
+                    break
+
+        output_matrix = np.zeros((1,217),dtype=float)
+        for i in range (len(new_matrix)):
+            new_row =  np.zeros((1,217),dtype=float)
+            count = 0
+            for col in range(len(new_matrix[i])):
+                if new_matrix[i][col] == 0.5:
+                    new_row[0][count] = 0.5
+                    count += 1
+                    if col == 216:
+                        output_matrix = np.vstack((output_matrix, new_row))
+                elif new_matrix[i][col] == 1:
+                    new_row[0][count] = 1
+                    count += 1
+                    if new_matrix[i][col+1] == 0:
+                        output_matrix = np.vstack((output_matrix, new_row))
+                        new_row =  np.zeros((1,217),dtype=float)
+                        count = 0
+
+        zero_counts = np.sum(output_matrix == 0,axis=1)
+
+        sorted_indices = np.argsort(zero_counts)[::-1]  # Get the indices that would sort the array descendingly
+        sorted_matrix = output_matrix[sorted_indices]
+
+        plt.imshow(sorted_matrix,cmap=cmap_custom,interpolation="nearest")
+        plt.title("Matriz Sobrevivência Deputados")
+        plt.xlabel("Periods")
+        plt.ylabel("Ranked Survival Times")
+        plt.show()
+
+
     matrix = np.ones((70,1), dtype=int)
-    
-    out = []
 
     new_col = [[]]
 
@@ -72,7 +135,7 @@ class ModeloDeputados:
                                 perdas += 1
                                 continue 
                             self.new_col[row] = 1
-                    self.FillElections(col, 70-perdas)
+                    self.FillElections(col, perdas)
                     self.matrix = np.hstack((self.matrix, self.new_col))
                 else:
                     for row in range(len(self.matrix)):
