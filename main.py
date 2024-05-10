@@ -4,7 +4,7 @@ from analysis import AnaliseDeputados
 def main():
 
 #Quantos Ciclos irá usar
-    Ciclos = 3
+    Ciclos = 10
 
 #Criando Modelo 
     Modelo = ModeloDeputados(Ciclos)

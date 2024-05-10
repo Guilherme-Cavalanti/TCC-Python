@@ -36,16 +36,20 @@ class AnaliseDeputados:
                 newLine[col] = self.CumulativeHazardRate(row,col)  
                 teste[col] = self.HazardRate(row,col) 
             self.HazardRateMatrix.append(newLine)
-        print(f"\n Matriz com Hazard Rates Acumulativos criada com \n{len(self.HazardRateMatrix)} linhas")
+        print(f"\nMatriz com Hazard Rates Acumulativos criada com {len(self.HazardRateMatrix)} linhas")
     MeanArray = []
     STDArray = []
     def CreateMeanAndSTD(self):
         column_means = np.mean(self.HazardRateMatrix, axis=0)
         column_std = np.std(self.HazardRateMatrix, axis=0)
         self.MeanArray = column_means
+        print(f"\nMédia calculada para {len(self.MeanArray)} elementos")
         self.STDArray = column_std
+        print(f"Desvio Padrão calculado para {len(self.STDArray)} elementos")
     ConfidenceIntervalErrors = []
     def CreateConfidenceIntervals(self):
+        self.MeanArray[0] = 0.0000001
+        self.STDArray[0] = 0.0000001
         n = len(self.MeanArray)
         confidence_level = 0.95
 
@@ -56,7 +60,7 @@ class AnaliseDeputados:
             CI = stats.norm.interval(confidence_level, loc=self.MeanArray[i], scale=self.STDArray[i])
             lower_bounds[i], upper_bounds[i] = CI
         self.ConfidenceIntervalErrors = (upper_bounds - lower_bounds) / 2
-        print(f"Gerados {len(self.ConfidenceIntervalErrors)} intervalos de confiança com sucesso")
+        print(f"Gerados {len(self.ConfidenceIntervalErrors)} intervalos de confiança com sucesso\n")
     def PlotHazardRateGraph(self):
         plt.errorbar(x=np.arange(218),y=self.MeanArray,yerr=self.ConfidenceIntervalErrors ,color="black", ecolor="gray")
         plt.title("Hazard Rates Acumulativos")

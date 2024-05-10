@@ -7,7 +7,7 @@ import matplotlib.colors as mcolors
 class ModeloDeputados:
     def __init__(self, cycles):
         self.cycles = cycles
-        print(f"Modelo criado com {self.cycles} ciclos\n")
+        print(f"\nModelo criado com {self.cycles} ciclos\n")
 
     def output(self):
         np.set_printoptions(threshold=sys.maxsize)
@@ -166,7 +166,7 @@ class ModeloDeputados:
             print(f"Deputados usados no ciclo {counter}: {len(self.matrix)}")
 
         if len(self.LoadedMatrices) == self.cycles:
-            print(f"{self.cycles} ciclos completados com sucesso!")
+            print(f"\n{self.cycles} ciclos completados com sucesso!\n")
 
     SurvivalTimeData = []
     def CreateSurvivalMatrix(self):
@@ -191,7 +191,7 @@ class ModeloDeputados:
             output_matrix = output_matrix[1:]
             print(f"Linhas geradas para matriz {m+1}: {len(output_matrix)}")
             self.SurvivalTimeData.append(output_matrix)
-        print(f"{len(self.SurvivalTimeData)} matrizes de tempo de sobrevivência geradas com sucesso!")   
+        print(f"\n{len(self.SurvivalTimeData)} matrizes de tempo de sobrevivência geradas com sucesso!")   
     def GetSurvivalTimeData(self):
         if len(self.SurvivalTimeData) == self.cycles:
             return self.SurvivalTimeData
