@@ -2,5 +2,5 @@
 Códigos do meu TCC
 
 ## Requisitos
-* numpy
-* matplotlib
+* numpy 1.26.4
+* matplotlib 3.8.4
