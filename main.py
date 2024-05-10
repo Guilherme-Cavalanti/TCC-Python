@@ -4,7 +4,7 @@ from analysis import AnaliseDeputados
 def main():
 
 #Quantos Ciclos irá usar
-    Ciclos = 10
+    Ciclos = 3
 
 #Criando Modelo 
     Modelo = ModeloDeputados(Ciclos)
@@ -39,6 +39,9 @@ def main():
 
     # Pegar média e desvio padrão dos hazard rates
     Analisador.CreateMeanAndSTD()
+
+    # Criar Intervalos De Confiança para essa Média e Desvio Padrão
+    Analisador.CreateConfidenceIntervals()
 
     # Gerar Gráfico de Hazard Rates
     Analisador.PlotHazardRateGraph()

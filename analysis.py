@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import stats
 
 class AnaliseDeputados:
     def __init__(self):
@@ -43,8 +44,21 @@ class AnaliseDeputados:
         column_std = np.std(self.HazardRateMatrix, axis=0)
         self.MeanArray = column_means
         self.STDArray = column_std
+    ConfidenceIntervalErrors = []
+    def CreateConfidenceIntervals(self):
+        n = len(self.MeanArray)
+        confidence_level = 0.95
+
+        lower_bounds = np.zeros_like(self.MeanArray)
+        upper_bounds = np.zeros_like(self.MeanArray)
+        for i in range(n):
+            #CI = stats.norm.interval(confidence_level, loc=self.MeanArray[i], scale=self.STDArray[i] / np.sqrt(n))
+            CI = stats.norm.interval(confidence_level, loc=self.MeanArray[i], scale=self.STDArray[i])
+            lower_bounds[i], upper_bounds[i] = CI
+        self.ConfidenceIntervalErrors = (upper_bounds - lower_bounds) / 2
+        print(f"Gerados {len(self.ConfidenceIntervalErrors)} intervalos de confiança com sucesso")
     def PlotHazardRateGraph(self):
-        plt.errorbar(x=np.arange(218),y=self.MeanArray,yerr=self.STDArray ,color="black", ecolor="gray")
+        plt.errorbar(x=np.arange(218),y=self.MeanArray,yerr=self.ConfidenceIntervalErrors ,color="black", ecolor="gray")
         plt.title("Hazard Rates Acumulativos")
         plt.xlabel("Months")
         plt.ylabel("Probabilidade")
