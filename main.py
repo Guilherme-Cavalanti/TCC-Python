@@ -35,16 +35,24 @@ def main():
     Analisador.GenerateSurvivalPeriodMatrix(DadosModelo)
 
 ##Gerando a Matriz com os Hazard Rates Acumulativos
-    Analisador.CreateHazardMatrix()
+    #Analisador.CreateHazardMatrix()
 
     # Pegar média e desvio padrão dos hazard rates
-    Analisador.CreateMeanAndSTD()
+    #Analisador.CreateMeanAndSTD()
 
     # Criar Intervalos De Confiança para essa Média e Desvio Padrão
-    Analisador.CreateConfidenceIntervals()
+    #Analisador.CreateConfidenceIntervals()
 
     # Gerar Gráfico de Hazard Rates
-    Analisador.PlotHazardRateGraph()
+    #Analisador.PlotHazardRateGraph()
+## Gerando matrix com produto limite e erro de GreenWood
+    Analisador.CreateProductMatrix()
+
+    # Pegar Média e Erro médio deles
+    Analisador.CreateProductMeanAndSTD()
+
+    #Gerar Gráfico da Função de Sobrevivência
+    Analisador.PlotSurvivorFunction()
 
 
 

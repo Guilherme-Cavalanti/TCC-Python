@@ -16,9 +16,11 @@ class AnaliseDeputados:
             self.SurvivalPeriodMatrix.append(newLine)
         print(f"Matriz com {len(self.SurvivalPeriodMatrix)} vetores criada.")
     def HazardRate(self, row, col):
-        sum = np.sum(self.SurvivalPeriodMatrix[row])
-        h = self.SurvivalPeriodMatrix[row][col]/sum
-        return h
+        sum = np.sum(self.SurvivalPeriodMatrix[row][col:])
+        if sum > 0:
+            h = self.SurvivalPeriodMatrix[row][col]/sum
+            return h 
+        return 0
     def CumulativeHazardRate(self, row,col):
         if(col==0):
             return 0
@@ -64,6 +66,67 @@ class AnaliseDeputados:
     def PlotHazardRateGraph(self):
         plt.errorbar(x=np.arange(218),y=self.MeanArray,yerr=self.ConfidenceIntervalErrors ,color="black", ecolor="gray")
         plt.title("Hazard Rates Acumulativos")
+        plt.xlabel("Months")
+        plt.ylabel("Probabilidade")
+        plt.show()
+    
+    def KaplanMeier(self,row,col):
+        if(col==0):
+            return 0
+        S = 1
+        for i in range(col):
+            S*= 1 - self.HazardRate(row,i) 
+        S *= 1 - self.HazardRate(row,col)
+
+        #Retornar função de sobrevivência 
+        return S
+        #Retornar função de sobrevivência ao contrário
+        #return 1-S
+
+    def GreenWoodError(self,row,col):
+         # Inicializa a probabilidade de sobrevivência
+        S = 1
+        var_sum = 0
+        for i in range(col + 1):
+            hazard_rate = self.HazardRate(row, i)
+            S *= 1- hazard_rate  # Multiplica pelo complemento da taxa de risco
+            remaining_in_risk = sum(self.SurvivalPeriodMatrix[row][i:])
+            num_exits = self.SurvivalPeriodMatrix[row][i]
+            if remaining_in_risk > 0:
+                var_sum += num_exits / (remaining_in_risk * (remaining_in_risk - num_exits))
+        
+        var = (S)**2 * var_sum
+        se = np.sqrt(var)
+        return se
+
+    ProductMatrix = []
+    GreenWoodMatrix = []
+
+    def CreateProductMatrix (self):
+        for row in range(len(self.SurvivalPeriodMatrix)):
+            newLine = np.zeros(218, dtype=float)
+            newLineGreenWood = np.zeros(218, dtype=float)
+            for col in range(len(self.SurvivalPeriodMatrix[row])):
+                newLine[col] = self.KaplanMeier(row,col)  
+                newLineGreenWood[col] = self.GreenWoodError(row,col) 
+            self.ProductMatrix.append(newLine)
+            self.GreenWoodMatrix.append(newLineGreenWood)
+        print(f"\nMatriz com Hazard Rates Acumulativos criada com {len(self.HazardRateMatrix)} linhas")
+
+    MeanProductArray = []
+    GreenWoodErrorArray = []
+
+    def CreateProductMeanAndSTD (self):
+        column_means = np.mean(self.ProductMatrix, axis=0)
+        greenwood_means = np.mean(self.GreenWoodMatrix, axis=0)
+        self.MeanProductArray = column_means
+        print(f"\nMédia de produto limite calculada para {len(self.MeanProductArray)} elementos")
+        self.GreenWoodErrorArray = greenwood_means
+        print(f"Erro Greenwood médio calculado para {len(self.GreenWoodErrorArray)} elementos")
+
+    def PlotSurvivorFunction (self):
+        plt.errorbar(x=np.arange(218),y=self.MeanProductArray,yerr=self.GreenWoodErrorArray ,color="black", ecolor="gray")
+        plt.title("Função de Sobrevivência")
         plt.xlabel("Months")
         plt.ylabel("Probabilidade")
         plt.show()
