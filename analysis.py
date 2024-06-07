@@ -76,12 +76,12 @@ class AnaliseDeputados:
         S = 1
         for i in range(col):
             S*= 1 - self.HazardRate(row,i) 
-        S *= 1 - self.HazardRate(row,col)
+        S *= 1 - self.HazardRate(row,col)   
 
         #Retornar função de sobrevivência 
-        return S
+        #return S
         #Retornar função de sobrevivência ao contrário
-        #return 1-S
+        return 1-S
 
     def GreenWoodError(self,row,col):
          # Inicializa a probabilidade de sobrevivência
