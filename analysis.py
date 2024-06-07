@@ -64,6 +64,17 @@ class AnaliseDeputados:
         self.ConfidenceIntervalErrors = (upper_bounds - lower_bounds) / 2
         print(f"Gerados {len(self.ConfidenceIntervalErrors)} intervalos de confiança com sucesso\n")
     def PlotHazardRateGraph(self):
+        print(
+            f"""
+                5 meses: {self.MeanArray[5]}\n
+                24 meses: {self.MeanArray[24]}\n
+                48 meses: {self.MeanArray[48]}\n
+                73 meses: {self.MeanArray[73]}\n
+                143 meses: {self.MeanArray[143]}\n
+                173 meses: {self.MeanArray[173]}\n
+                192 meses: {self.MeanArray[192]}\n
+            """
+        )
         plt.errorbar(x=np.arange(218),y=self.MeanArray,yerr=self.ConfidenceIntervalErrors ,color="black", ecolor="gray")
         plt.title("Hazard Rates Acumulativos")
         plt.xlabel("Months")
@@ -80,7 +91,7 @@ class AnaliseDeputados:
 
         #Retornar função de sobrevivência 
         #return S
-        #Retornar função de sobrevivência ao contrário
+        #Retornar função de sobrevivência ao contrário (mortalidade)
         return 1-S
 
     def GreenWoodError(self,row,col):
@@ -126,7 +137,7 @@ class AnaliseDeputados:
 
     def PlotSurvivorFunction (self):
         plt.errorbar(x=np.arange(218),y=self.MeanProductArray,yerr=self.GreenWoodErrorArray ,color="black", ecolor="gray")
-        plt.title("Função de Sobrevivência")
+        plt.title("Função de Mortalidade")
         plt.xlabel("Months")
         plt.ylabel("Probabilidade")
         plt.show()

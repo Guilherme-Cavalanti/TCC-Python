@@ -10,13 +10,13 @@ def main():
     Modelo = ModeloDeputados(Ciclos)
 
 #Rodando Modelo uma única vez e gerando gráficos
-    # Modelo.run()
+    Modelo.run()
 
     ## Ver Output
-    # Modelo.output()
+    #Modelo.output()
 
     ## Ver gráfico da Matriz de Output
-    # Modelo.PlotMatrix()
+    #Modelo.PlotMatrix()
 
     ## Ver gráfico com períodos de sobrevivência de cada deputado
     #Modelo.PlotSurvivalTime()
@@ -37,7 +37,7 @@ def main():
 ##Gerando a Matriz com os Hazard Rates Acumulativos
     Analisador.CreateHazardMatrix()
 
-    # Pegar média e desvio padrão dos hazard rates
+    # Pegar média e desvio padrão dos hazard rates cumulativos
     Analisador.CreateMeanAndSTD()
 
     # Criar Intervalos De Confiança para essa Média e Desvio Padrão
